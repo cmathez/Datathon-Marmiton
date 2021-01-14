@@ -54,7 +54,7 @@ filters = html.Div(id = "block-filters", children = [
                             {"label": "Tout", "value": "Tout"},
                             {"label": "Note basse", "value": "1"},
                             {"label": "Note moyenne", "value": "2"},
-                            {"label": "Note élevée", "value": "4"}
+                            {"label": "Note élevée", "value": "3"}
                     ], value = "Tout"
                     ),
                     html.Hr(),
@@ -64,7 +64,7 @@ filters = html.Div(id = "block-filters", children = [
                             {"label": "Tout", "value": "Tout"},
                             {"label": "Assez cher", "value": "Assez cher"},
                             {"label": "Coût moyen", "value": "Coût moyen"},
-                            {"label": "Bon marché", "value": "Bon marché"}
+                            {"label": "Bon marché", "value": "bon marché"}
                     ], value = "Tout"
                     ),
                     html.Hr(),
@@ -174,8 +174,6 @@ def display_tab_content(active_tab):
 
 
 # update ingredients frequencies graph
-
-
 @app.callback(
     Output("freq_ing", "figure"), 
     [Input("card-tabs", "active_tab"),
@@ -194,16 +192,56 @@ def display_graph(tab, rate, cost, difficulty, time):
     elif tab == "tab_dessert":
         df = df_dessert_N.copy()
 
+    # input rate :
+    if rate == "1":
+        df = df[df["rate"] <= 3]
+    elif rate == "2":
+        df = df[df["rate"] > 3]
+        df = df[df["rate"] <= 4]
+    elif rate == "3":
+        df = df[df["rate"] > 4]
+    
+
+    # input cost 
+    if cost == "Assez cher":
+        df = df[df["cost"] == "assez cher"]
+    elif cost == "Coût moyen":
+        df = df[df["cost"] == "Coût moyen"]
+    elif cost == "bon marché":
+        df = df[df["cost"] == "bon marché"]
+
+    # input difficulty :
+    if difficulty == "Niveau moyen":
+        df = df[df["difficulty"] == "Niveau moyen"]
+    elif difficulty == "Facile":
+        df = df[df["difficulty"] == "facile"]
+    elif difficulty == "Trés facile":
+        df = df[df["difficulty"] == "très facile"]
+    elif difficulty == "Difficile":
+        df = df[df["difficulty"] == "difficile"]
+
+
+    # input time : 
+    df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
+    if time == "rapide":
+        df = df[df["time_preparation"] <= 30]
+    elif time == "moyen":
+        df = df[df["time_preparation"] > 30]
+        df = df[df["time_preparation"] <= 90 ]
+    elif time == "long":
+        df = df[df["time_preparation"] > 90]
+
+    
+    df = df.reset_index(drop=True)
+
     if tab != "tab_all":
         
-
-    # masque avec  
-    # récupération list ingrédients marmiton
-
+  
+        # récupération list ingrédients marmiton
         total_ingredients_ = ing_list(df_ingredients)
 
         # retraitements dataset :
-        df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
+        
         df["time_cooking"] = df["time_cooking"].apply(lambda x: time_format(x))
         df["total_time"] = df["total_time"].apply(lambda x: time_format(x))
         df["likes"] = df["likes"].apply(lambda x: likes(x))
@@ -222,8 +260,11 @@ def display_graph(tab, rate, cost, difficulty, time):
         columns_ = list(df.columns)
         columns_.append("ingredients_clean")  
         df = pd.concat([df, pd.DataFrame(l_ingre)], axis=1)
+        print(df)   
         df.columns = columns_
-
+        print(df.shape)
+        
+        
         # calcul des fréquences:
         keys = []
         nb_frequencies = []
