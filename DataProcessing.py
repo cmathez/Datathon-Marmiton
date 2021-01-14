@@ -8,6 +8,7 @@ from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder,OrdinalEncoder, MinMaxScaler,StandardScaler
 from sklearn.pipeline import make_pipeline
 from random import *
+import string
 
 import nltk
 nltk.download('popular')
@@ -53,7 +54,7 @@ def max_len(l):
   return result
 
 
-def ingredients_clean(x):
+def ingredients_clean(x,total_ingredients_ ):
   ing_to_delete = ["poivre", "sel", "oeuf", "beurre", "huile", "sucre", 
                  "farine", "persil", "ciboulette", "échalotte", "oignon"
                  ]

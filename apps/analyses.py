@@ -22,6 +22,9 @@ df_starter_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackat
 df_meal_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats.csv")
 df_dessert_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_desserts.csv")
 
+df_ingredients = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_ingredients.csv")
+
+
 df_recipes_N = pd.concat([df_starter_N,df_meal_N,df_dessert_N])
 df_recipes_N['Xmas recipe'] = True
 
@@ -30,7 +33,7 @@ df_recipes_N['Xmas recipe'] = True
 
 df_starter = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_entrees_pas_noel.csv")
 df_starter['category']='aperitif/starter'
-df_meal = pd.read_csv("d/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats_pas_noel.csv")
+df_meal = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats_pas_noel.csv")
 df_meal['category']='meal'
 df_desserts = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_desserts_pas_noel.csv")
 df_desserts['category'] = 'dessert'
@@ -184,6 +187,70 @@ def display_tab_content(active_tab):
 )
 
 def display_graph(tab, rate, cost, difficulty, time):
-    pass
+    if tab == "tab_starter":
+        df = df_starter_N.copy()
+    elif tab == "tab_meal":
+        df = df_meal_N.copy()
+    elif tab == "tab_dessert":
+        df = df_dessert_N.copy()
+
+    if tab != "tab_all":
+        
+
+    # masque avec  
+    # récupération list ingrédients marmiton
+
+        total_ingredients_ = ing_list(df_ingredients)
+
+        # retraitements dataset :
+        df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
+        df["time_cooking"] = df["time_cooking"].apply(lambda x: time_format(x))
+        df["total_time"] = df["total_time"].apply(lambda x: time_format(x))
+        df["likes"] = df["likes"].apply(lambda x: likes(x))
+        
+
+        df['time_cooking'].fillna(0, inplace = True)
+        df['total_time'].fillna(0,inplace=True)
+        df['time_preparation'].fillna(0,inplace=True)
+
+        l_ingre = []
+        for item in range(len(df["ingredients"])):
+            ingredients = df.loc[item,"ingredients"]
+            l_ = ingredients_clean(ingredients, total_ingredients_)
+            l_ingre.append(l_)
+
+        columns_ = list(df.columns)
+        columns_.append("ingredients_clean")  
+        df = pd.concat([df, pd.DataFrame(l_ingre)], axis=1)
+        df.columns = columns_
+
+        # calcul des fréquences:
+        keys = []
+        nb_frequencies = []
+        for key, value in freq_ingredients(total_ingredients(df)).most_common(20):
+            keys.append(key) # on récupère la liste des mots
+            nb_frequencies.append(value) # on récupère la liste des occurrences pour chaque mot
+
+        fig = go.Figure()
+
+        fig.add_trace(go.Bar(x=keys, y=nb_frequencies,
+            marker_color = "darkred", # couleur des bins
+            #xbins=dict(start=1.5, end=4.5), autobinx=False),
+        ))
+
+
+        fig.update_layout(
+                title_text='Ingrédients les plus fréquents', # title of plot
+                title_x = 0.5,  #centrage du titre
+                xaxis_title_text='ingrédient', # xaxis label
+                yaxis_title_text='distribution', # yaxis label
+                bargap=0.05, # pour la taille de l'espace entre les bins  
+                plot_bgcolor="#EBEDEF",# pour changer la couleur du background
+                hovermode="x",
+                width = 800,
+                )
+
+        return fig
+
 
 
