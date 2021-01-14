@@ -18,6 +18,28 @@ import pytz
 import plotly.express as px
 import plotly.graph_objects as go
 
+df_starter_N = pd.read_csv("data\df_entrees.csv")
+df_meal_N = pd.read_csv("data\df_plats.csv")
+df_dessert_N = pd.read_csv("data\df_desserts.csv")
+
+df_recipes_N = pd.concat([df_starter_N,df_meal_N,df_dessert_N])
+df_recipes_N['Xmas recipe'] = True
+
+
+## No christmas data
+
+df_starter = pd.read_csv("data\df_entrees_pas_noel.csv")
+df_starter['category']='aperitif/starter']
+df_meal = pd.read_csv("data\df_plats_pas_noel.csv")
+df_meal['category']='meal'
+df_desserts = pd.read_csv("data\df_desserts_pas_noel.csv")
+df_desserts['category'] = 'dessert'
+
+df_recipes = pd.concat([df_starter,df_meal,df_desserts])
+df_recipes['Xmas recipe'] = False
+df_recipes.drop('gender', axis = 1, inplace = True)
+df = pd.concat([df_recipes_N, df_recipes])
+
 
 filters = html.Div(id = "block-filters", children = [
                     dcc.RadioItems(         # to create filter (by day, week, month, year)
@@ -69,7 +91,7 @@ tab_text_content = dbc.Card(
         [
            html.Div(
     [
-        dbc.Input(id="text-enter", placeholder="Donne le nom d'une recette...", type="text"),
+        dbc.Input(id="text-enter", placeholder="Donnez l'url d'une recette marmiton...", type="text"),
         html.Br(),
         html.Div(id="reco-text"),
     ]
