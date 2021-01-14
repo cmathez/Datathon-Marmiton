@@ -99,4 +99,8 @@ def output_text(value):
         labels = ['Noël', 'Pas Noël']
         values = [freq_ing_N, freq_ing]
         fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
+<<<<<<< HEAD
         return fig
+=======
+        return fig
+>>>>>>> da554419b614db3c2e93f5cf1a0707335b10a224
