@@ -1,14 +1,18 @@
-def get_ing(df):
-    recipe = df['ingredients'].to_list()
-    ing = []
-    for r in recipe:
-        for el in r.split(','):
-            ing.append(el)
-    return set(ing)
-
 import numpy as np
 import re
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.compose import make_column_transformer
+from sklearn.preprocessing import OneHotEncoder,OrdinalEncoder, MinMaxScaler,StandardScaler
+from sklearn.pipeline import make_pipeline
+from random import *
+
+import nltk
+nltk.download('popular')
+
+
 
 def time_format(x):
   x=re.sub(' \d+ sec','',x)
@@ -26,6 +30,8 @@ def time_format(x):
     total_min = int(x)
   else:
     total_min = np.nan
+
+  print(type(total_min))
   
   return total_min
 
@@ -129,6 +135,7 @@ def DataProcessing(df):
 # recommandation algo to choose recipe
 def choose_recipe(df,url):
 
+  tfidf = TfidfVectorizer(ngram_range = (1, 2))
 
   idx = df[df['links'] == url].index[0]
 
@@ -143,10 +150,10 @@ def choose_recipe(df,url):
 
   df1=pd.concat([df,df_temp],axis=1)
   
-  col=['rate','likes','total_time','time_preparation','time_cooking','cost','difficulty','category','gender','number people']
+  col=['rate','likes','total_time','time_preparation','time_cooking','cost','difficulty','category','Xmas recipe','number people']
 
   col_trans= make_column_transformer(     
-      (OneHotEncoder(), ['category','gender']),
+      (OneHotEncoder(), ['category','Xmas recipe']),
       (OrdinalEncoder(), ['cost','difficulty']),
       (StandardScaler(), ['rate','likes','total_time','time_preparation','time_cooking','number people']),
       remainder='passthrough')
@@ -177,4 +184,4 @@ def choose_recipe(df,url):
   df_ind = df_ind.sort_values(by='rate', ascending=False) 
   df_ind =df_ind.head(3) 
 
-  return df_ind
+  return df_ind.reset_index(drop=True)

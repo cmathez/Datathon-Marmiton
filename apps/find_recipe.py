@@ -29,7 +29,7 @@ df_recipes_N['Xmas recipe'] = True
 ## No christmas data
 
 df_starter = pd.read_csv("data\df_entrees_pas_noel.csv")
-df_starter['category']='aperitif/starter']
+df_starter['category']='aperitif/starter'
 df_meal = pd.read_csv("data\df_plats_pas_noel.csv")
 df_meal['category']='meal'
 df_desserts = pd.read_csv("data\df_desserts_pas_noel.csv")
@@ -38,7 +38,8 @@ df_desserts['category'] = 'dessert'
 df_recipes = pd.concat([df_starter,df_meal,df_desserts])
 df_recipes['Xmas recipe'] = False
 df_recipes.drop('gender', axis = 1, inplace = True)
-df = pd.concat([df_recipes_N, df_recipes])
+df_recipes.rename(columns = {"link":"links"}, inplace = True)
+df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
 
 filters = html.Div(id = "block-filters", children = [
@@ -149,13 +150,15 @@ def get_recommandation(value):
         return html.P("La recette demandée n'est pas disponible")
     
     else :
-        df_reco = choose_recipe(DataProcessing(df),value)
-        reco_layout = htlm.Div(
+        dff = df.copy()
+        df_reco = choose_recipe(DataProcessing(dff),value)
+        print(df_reco)
+        reco_layout = html.Div(
             dbc.Row(
                 dbc.Col([
                     dbc.NavLink(df_reco.loc[0,'title'], className = 'item', active=True, href=df_reco.loc[0,'links'], external_link=True,),
                     html.Hr(),
-                    html.P(f'Notes {df_reco.loc[0,'title']}')
+                    html.P(f"Notes {df_reco.loc[0,'rate']}")
 
                 ])
             )

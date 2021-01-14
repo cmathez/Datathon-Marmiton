@@ -41,7 +41,7 @@ df_recipes = pd.concat([df_starter,df_meal,df_desserts])
 df_recipes['Xmas recipe'] = False
 df_recipes.drop('gender', axis = 1, inplace = True)
 df = pd.concat([df_recipes_N, df_recipes])
-list_ing = get_ing(df)
+
 
 
 
