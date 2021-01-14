@@ -18,9 +18,9 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 
-df_starter_N = pd.read_csv("data\df_entrees.csv")
-df_meal_N = pd.read_csv("data\df_plats.csv")
-df_dessert_N = pd.read_csv("data\df_desserts.csv")
+df_starter_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_entrees.csv")
+df_meal_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats.csv")
+df_dessert_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_desserts.csv")
 
 df_recipes_N = pd.concat([df_starter_N,df_meal_N,df_dessert_N])
 df_recipes_N['Xmas recipe'] = True
@@ -30,9 +30,9 @@ df_recipes_N['Xmas recipe'] = True
 
 df_starter = pd.read_csv("data\df_entrees_pas_noel.csv")
 df_starter['category']='aperitif/starter'
-df_meal = pd.read_csv("data\df_plats_pas_noel.csv")
+df_meal = pd.read_csv("d/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats_pas_noel.csv")
 df_meal['category']='meal'
-df_desserts = pd.read_csv("data\df_desserts_pas_noel.csv")
+df_desserts = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_desserts_pas_noel.csv")
 df_desserts['category'] = 'dessert'
 
 df_recipes = pd.concat([df_starter,df_meal,df_desserts])
@@ -46,7 +46,7 @@ df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
 filters = html.Div(id = "block-filters", children = [
                     dbc.Select(
-                        id="select",
+                        id="rate",
                         options=[
                             {"label": "Tout", "value": "Tout"},
                             {"label": "Note basse", "value": "1"},
@@ -56,7 +56,7 @@ filters = html.Div(id = "block-filters", children = [
                     ),
                     html.Hr(),
                     dbc.Select(
-                        id="select",
+                        id="cost",
                         options=[
                             {"label": "Tout", "value": "Tout"},
                             {"label": "Assez cher", "value": "Assez cher"},
@@ -66,7 +66,7 @@ filters = html.Div(id = "block-filters", children = [
                     ),
                     html.Hr(),
                     dbc.Select(
-                        id="select",
+                        id="difficulty",
                         options=[
                             {"label": "Tout", "value": "Tout"},
                             {"label": "Niveau moyen", "value": "Niveau moyen"},
@@ -77,7 +77,7 @@ filters = html.Div(id = "block-filters", children = [
                     ),
                     html.Hr(),
                     dbc.Select(
-                        id="select",
+                        id="time",
                         options=[
                             {"label": "Tout", "value": "Tout"},
                             {"label": "Rapide (< 30 min)", "value": "rapide"},
@@ -147,7 +147,7 @@ card = dbc.Card(
         dbc.CardHeader(
             dbc.Tabs(
                 [
-                    dbc.Tab(label="Entrée", tab_id="tab_starter"),
+                    dbc.Tab(label="Appéritif/Entrée", tab_id="tab_starter"),
                     dbc.Tab(label="Plat", tab_id="tab_meal"),
                     dbc.Tab(label="Dessert", tab_id="tab_dessert"),
                     dbc.Tab(label="Tout", tab_id="tab_all")
@@ -185,5 +185,22 @@ def display_tab_content(active_tab):
             html.P(f"The pathname {active_tab} was not recognised..."),
         ]
     )
+
+
+# update ingredients frequencies graph
+
+
+@app.callback(
+    Output("freq_ing", "figure"), 
+    [Input("card-tabs", "active_tab"),
+    Input("rate", "value"), 
+    Input("cost", "value"),
+    Input("difficulty", "value"),
+    Input("time", "value"),
+    ]
+)
+
+def display_graph(tab, rate, cost, difficulty, time):
+    pass
 
 

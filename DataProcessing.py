@@ -12,6 +12,13 @@ from random import *
 import nltk
 nltk.download('popular')
 
+def ing_list(df):
+  total_ingredients_= []
+  for i in df["ingredients"]:
+    total_ingredients_.append(i)
+
+  return total_ingredients_
+
 
 
 def time_format(x):
