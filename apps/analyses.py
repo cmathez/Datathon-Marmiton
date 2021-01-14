@@ -28,7 +28,7 @@ df_recipes_N['Xmas recipe'] = True
 
 ## No christmas data
 
-df_starter = pd.read_csv("data\df_entrees_pas_noel.csv")
+df_starter = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_entrees_pas_noel.csv")
 df_starter['category']='aperitif/starter'
 df_meal = pd.read_csv("d/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats_pas_noel.csv")
 df_meal['category']='meal'
@@ -100,7 +100,7 @@ title_2 = dbc.Jumbotron(
         ]
     )
 
-tab_starter_content = dbc.Card(
+tab_theme_content = dbc.Card(
     dbc.CardBody(
         [
         html.Div(
@@ -118,20 +118,7 @@ tab_starter_content = dbc.Card(
     ),
 )
 
-tab_meal_content = dbc.Card(
-    dbc.CardBody(
-        [
-           html.P('Test_top'),
-        ]
-    ),
-)
-tab_dessert_content = dbc.Card(
-    dbc.CardBody(
-        [
-           html.P('Test_raw'),
-        ]
-    ),
-)
+
 
 tab_all_content = dbc.Card(
     dbc.CardBody(
@@ -169,12 +156,8 @@ layout = html.Div([card])
     Output("card-content", "children"), [Input("card-tabs", "active_tab")]
 )
 def display_tab_content(active_tab):
-    if active_tab == "tab_starter":    
-        return tab_starter_content
-    elif active_tab == 'tab_meal':
-        return tab_meal_content
-    elif active_tab == 'tab_dessert':
-        return tab_dessert_content
+    if active_tab == "tab_starter" or active_tab == 'tab_meal' or active_tab == 'tab_dessert':    
+        return tab_theme_content
     elif active_tab == 'tab_all':
         return tab_all_content
     else:
