@@ -69,7 +69,7 @@ tab_text_content = dbc.Card(
         [
            html.Div(
     [
-        dbc.Input(id="text-enter", placeholder="Donne le nom d'une recette...", type="text"),
+        dbc.Input(id="text-enter", placeholder="Entre l'url d'une recette de Marmiton ...", type="text"),
         html.Br(),
         html.Div(id="reco-text"),
     ]
