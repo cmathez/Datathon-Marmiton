@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 def get_ing(df):
     recipe = df['ingredients'].to_list()
     ing = []
@@ -7,7 +6,6 @@ def get_ing(df):
             ing.append(el)
     return set(ing)
 
-=======
 import numpy as np
 
 def time_format(x):
@@ -27,4 +25,3 @@ def time_format(x):
     total_min = np.nan
   
   return total_min
->>>>>>> 5a1b2ac530bde43c092c1a59b5d162525e374ebd
