@@ -18,7 +18,7 @@ jumbotron = dbc.Jumbotron(
                             html.Img(src = "https://www.cuisinevault.com/wp-content/uploads/2018/12/Christmas-Cooking-Guide.jpg", alt = 'Image home', height = "300")
                                 
                         ),
-                    dbc.Col([html.H1("Les recettes de Noël \t\ten graphiques", className="display-3")
+                    dbc.Col([html.H1("Les recettes de Noël en graphiques", className="display-3")
                 ],
                 align="center",
             ),
@@ -47,7 +47,7 @@ app.layout = html.Div([
                 html.Div([
                         jumbotron,
                     html.Div([
-                        html.Canvas(id='sky'),
+
                     dbc.Row([
                         dbc.Col(id='col-left',children = [dcc.Location(id='url'), nav], width = 1.5),
                         dbc.Col([content], width={"size" : 9})],
