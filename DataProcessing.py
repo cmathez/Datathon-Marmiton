@@ -36,48 +36,76 @@ def time_format(x):
   return total_min
 
 
+def max_len(l):
+  compteur = 0
+  result = ""
+  for item in l:
+    if len(item) > compteur:
+      compteur = len(item)
+      result = item
+  return result
+
+
 def ingredients_clean(x):
+  ing_to_delete = ["poivre", "sel", "oeuf", "beurre", "huile", "sucre", 
+                 "farine", "persil", "ciboulette", "échalotte", "oignon"
+                 ]
   x = x.split(",")
   l = "" 
-
   for i in range(len(x)):
-    x[i] = x[i].replace("['", "").strip()
-    x[i] = x[i].replace("[", "").strip()
-    x[i] = x[i].replace("]", "").strip()
-    x[i] = x[i].replace('["', "").strip()
-    x[i] = x[i].replace('"]', "").strip()
-    x[i] = x[i].replace("']", "").strip()
-    x[i] = re.sub("\(environ [0-9]* g\)", "", x[i])
-    x[i] = re.sub("g[^a-z]", "", x[i]) 
-    x[i] = re.sub("[0-9]* g[^a-z]", "", x[i])
-    x[i] = re.sub("[0-9]", "", x[i])
-    x[i] = x[i].replace("g d", "").strip()
-    x[i] = x[i].replace("cl de ", "").strip()
-    x[i] = x[i].replace("kg de ", "").strip()
-    x[i] = x[i].replace("Kg de ", "").strip()
-    x[i] = x[i].replace("kg d ", " ").strip()
-    x[i] = x[i].replace("Kg d ", " ").strip()
-    x[i] = x[i].replace("cl d", " ").strip()
-    x[i] = x[i].replace("ml de ", "").strip()
-    x[i] = x[i].replace("l de ", "").strip()
-    x[i] = x[i].replace("L de ", "").strip()
-    x[i] = x[i].replace('"', " ").strip()
-    x[i] = x[i].replace("'", " ").strip()
-    x[i] = x[i].replace("cuillères à soupe de", " ").strip()
-    x[i] = x[i].replace("cuillères à café de", " ").strip()
-    x[i] = x[i].replace("cuillère à café de", " ").strip()
-    x[i] = x[i].replace("cuillère à soupe de", " ").strip()
-    x[i] = x[i].replace("cuillères à soupe d", " ").strip()
-    x[i] = x[i].replace("cuillère à soupe d", " ").strip()
-    x[i] = x[i].replace("cuillère à café d", " ").strip()
-    x[i] = x[i].replace("(facultatif)", "").strip()
-    
-    if i != len(x)-1:
-      l += x[i]+","
-    else:
-      l += x[i]
-  
+    total = []
+    for ing in total_ingredients_:     
+      if ing in x[i]: 
+          total.append(ing)  
+    x[i] = max_len(total)
+    for value in ing_to_delete:
+      if value in x[i]:
+        x[i] =""
+    if x[i] != "":
+      if i != len(x)-1:
+        l += (x[i]+",").strip()
+      else:
+        l += x[i].strip()
+  if len(l) != 0:      
+    if l[-1] == ",":
+      return l[:-1]
   return l.strip()
+
+
+def freq_ingredients(sentence):
+  ingre_frequencies = nltk.FreqDist(sentence.split(","))
+  return ingre_frequencies
+
+def total_ingredients(df):
+  total_ingre = ""
+  for value in df["ingredients_clean"]:
+    total_ingre += value.strip() +","
+  return total_ingre.strip()
+
+
+def DataProcesing(df):
+  df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
+  df["time_cooking"] = df["time_cooking"].apply(lambda x: time_format(x))
+  df["total_time"] = df["total_time"].apply(lambda x: time_format(x))
+  f["likes"] = df["likes"].apply(lambda x: likes(x))
+  df['time_cooking'].fillna(0, inplace = True)
+  df["ingredients"] = df["ingredients"].apply(lambda x: "".join(x))
+  df["ingredients"] = df["ingredients"].apply(lambda x: x[2:-2])
+  df["ingredients"] = df["ingredients"].apply(lambda x: x.replace("',", " "))
+  df["ingredients"] = df["ingredients"].apply(lambda x: x.replace(" '", " "))
+
+  l_ingre = []
+  for item in range(len(df["ingredients"])):
+    ingredients = df.loc[item,"ingredients"]
+    l_ = ingredients_clean(ingredients)
+    l_ingre.append(l_)
+
+  columns_ = list(df.columns)
+  columns_.append("ingredients_clean")  
+  df = pd.concat([df, pd.DataFrame(l_ingre)], axis=1)
+  df.columns = columns_
+ 
+  return df
 
 
 
@@ -116,7 +144,7 @@ def DataProcessing(df):
   columns_.append("ingredients_clean")  
   df = pd.concat([df, pd.DataFrame(l_ingre)], axis=1)
   df.columns = columns_
-  df["ingredients_st"] = df["ingredients_clean"].apply(lambda x: func_clean(x))
+ 
 
   df['likes'] = df['likes'].apply(lambda x : likes(x))
 
