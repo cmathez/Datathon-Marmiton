@@ -42,6 +42,9 @@ df_recipes.rename(columns = {"link":"links"}, inplace = True)
 df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
 
+
+
+
 filters = html.Div(id = "block-filters", children = [
                     dcc.RadioItems(         # to create filter (by day, week, month, year)
                         id='crossfilter',
