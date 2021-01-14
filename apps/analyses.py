@@ -11,7 +11,7 @@ from app import app
 from DataProcessing import *
 import pandas as pd
 import numpy as np
-import pytz
+
 
     # To dataviz
 
@@ -45,24 +45,74 @@ df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
 
 filters = html.Div(id = "block-filters", children = [
-                    dcc.RadioItems(         # to create filter (by day, week, month, year)
-                        id='crossfilter',
-                        options=[{'label': i, 'value': i} for i in ['day', 'week', 'month', 'year']],
-                        value='month',
-                        labelStyle={'display': 'inline-block'})]
-                )
+                    dbc.Select(
+                        id="select",
+                        options=[
+                            {"label": "Tout", "value": "Tout"},
+                            {"label": "Note basse", "value": "1"},
+                            {"label": "Note moyenne", "value": "2"},
+                            {"label": "Note élevée", "value": "4"}
+                    ], value = "Tout"
+                    ),
+                    html.Hr(),
+                    dbc.Select(
+                        id="select",
+                        options=[
+                            {"label": "Tout", "value": "Tout"},
+                            {"label": "Assez cher", "value": "Assez cher"},
+                            {"label": "Coût moyen", "value": "Coût moyen"},
+                            {"label": "Bon marché", "value": "Bon marché"}
+                    ], value = "Tout"
+                    ),
+                    html.Hr(),
+                    dbc.Select(
+                        id="select",
+                        options=[
+                            {"label": "Tout", "value": "Tout"},
+                            {"label": "Niveau moyen", "value": "Niveau moyen"},
+                            {"label": "Facile", "value": "Facile"},
+                            {"label": "Trés facile", "value": "Trés facile"},
+                            {"label": "Difficile", "value": "Difficile"}
+                    ], value = "Tout"
+                    ),
+                    html.Hr(),
+                    dbc.Select(
+                        id="select",
+                        options=[
+                            {"label": "Tout", "value": "Tout"},
+                            {"label": "Rapide (< 30 min)", "value": "rapide"},
+                            {"label": "Moyen (entre 30 et 90 min)", "value": "moyen"},
+                            {"label": "Long (> 90 min)", "value": "long"}
+                            
+                    ], value = "Tout"
+                    ),
+])
+
+title_1 = dbc.Jumbotron(
+        [
+            html.H1("Quels ingrédients dans vos plats ?", className = "text-noel"),
+        ]
+    )
+
+title_2 = dbc.Jumbotron(
+        [
+            html.H1("La difficulté dans les préparations...", className = "text-noel"),
+        ]
+    )
 
 tab_starter_content = dbc.Card(
     dbc.CardBody(
         [
-           filters,
-           dbc.Jumbotron(
-        [
-            html.H1("404: Not found", className="text-danger"),
-            html.Hr(),
-            html.P(f"The pathname  was not recognised..."),
-        ]
-    )
+        html.Div(
+            [title_1,
+            dbc.Row([
+                dbc.Col(dcc.Graph(id = "freq_ing"), width={"size" : 10}),
+                dbc.Col(filters, width={"size" : 2}),
+            ]),
+            html.Hr(className="my-2"),
+            title_2
+            ]
+        )
            
         ]
     ),
@@ -135,3 +185,5 @@ def display_tab_content(active_tab):
             html.P(f"The pathname {active_tab} was not recognised..."),
         ]
     )
+
+

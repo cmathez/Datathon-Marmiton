@@ -29,7 +29,7 @@ df_recipes_N['Xmas recipe'] = True
 ## No christmas data
 
 df_starter = pd.read_csv("data\df_entrees_pas_noel.csv")
-df_starter['category']='aperitif/starter'
+df_starter['category'] ='aperitif/starter'
 df_meal = pd.read_csv("data\df_plats_pas_noel.csv")
 df_meal['category']='meal'
 df_desserts = pd.read_csv("data\df_desserts_pas_noel.csv")
@@ -41,7 +41,7 @@ df_recipes.drop('gender', axis = 1, inplace = True)
 df_recipes.rename(columns = {"link":"links"}, inplace = True)
 df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
-
+print(len(df_starter), len(df_desserts))
 
 
 
