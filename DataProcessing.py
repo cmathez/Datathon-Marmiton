@@ -90,7 +90,7 @@ def likes(x):
   return int(float(x)*1000)
 
 
-def DataProcesing(df):
+def DataProcessing(df):
   df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
   df["time_cooking"] = df["time_cooking"].apply(lambda x: time_format(x))
   df["total_time"] = df["total_time"].apply(lambda x: time_format(x))

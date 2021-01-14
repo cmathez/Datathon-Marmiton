@@ -144,8 +144,24 @@ def display_tab_content(active_tab):
     )
 
 @app.callback(Output("reco-text", "children"), [Input("text-enter", "value")])
-def output_text(value):
-    return html.P(value)
+def get_recommandation(value):
+    if len(df[df['links']==value])==0:
+        return html.P("La recette demandée n'est pas disponible")
+    
+    else :
+        df_reco = choose_recipe(DataProcessing(df),value)
+        reco_layout = htlm.Div(
+            dbc.Row(
+                dbc.Col([
+                    dbc.NavLink(df_reco.loc[0,'title'], className = 'item', active=True, href=df_reco.loc[0,'links'], external_link=True,),
+                    html.Hr(),
+                    html.P(f'Notes {df_reco.loc[0,'title']}')
+
+                ])
+            )
+        )
+
+        return reco_layout
 
 @app.callback(Output("reco-original", "children"), [Input("select", "value")])
 def output_text(value):
