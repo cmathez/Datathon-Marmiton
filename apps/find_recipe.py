@@ -154,14 +154,30 @@ def get_recommandation(value):
         df_reco = choose_recipe(DataProcessing(dff),value)
         print(df_reco)
         reco_layout = html.Div(
-            dbc.Row(
+            dbc.Row([
                 dbc.Col([
-                    dbc.NavLink(df_reco.loc[0,'title'], className = 'item', active=True, href=df_reco.loc[0,'links'], external_link=True,),
+                    dbc.NavLink(df_reco.loc[0,'title'], className = 'display-reco', active=True, href=df_reco.loc[0,'links'], external_link=True,),
                     html.Hr(),
-                    html.P(f"Notes {df_reco.loc[0,'rate']}")
+                    html.P(f"Note {df_reco.loc[0,'rate']} | Likes {df_reco.loc[0,'likes']} | Pour {df_reco.loc[0,'number people']} personnes")
+
+                ]),
+
+                dbc.Col([
+                    dbc.NavLink(df_reco.loc[1,'title'], className = 'display-reco', active=True, href=df_reco.loc[1,'links'], external_link=True,),
+                    html.Hr(),
+                    html.P(f"Note {df_reco.loc[1,'rate']} | Likes {df_reco.loc[1,'likes']} | Pour {df_reco.loc[1,'number people']} personnes")
+
+
+                ]),
+
+                dbc.Col([
+                    dbc.NavLink(df_reco.loc[2,'title'], className = 'display-reco', active=True, href=df_reco.loc[2,'links'], external_link=True,),
+                    html.Hr(),
+                    html.P(f"Note {df_reco.loc[2,'rate']} | Likes {df_reco.loc[2,'likes']} | Pour {df_reco.loc[2,'number people']} personnes")
+
 
                 ])
-            )
+            ])
         )
 
         return reco_layout
