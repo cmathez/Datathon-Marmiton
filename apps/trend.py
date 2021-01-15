@@ -3,7 +3,7 @@
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from app import app
 
     # To maniplutate data
@@ -87,6 +87,7 @@ def display_tab_content(active_tab):
 
 @app.callback(Output("result-enter-ing", "figure"), [Input("enter-ing", "value")])
 def output_text(value):
+
 
     list_ing_recipe_N = df_recipes_N['ingredients'].to_list()
     list_ing_recipe = df_recipes['ingredients'].to_list()

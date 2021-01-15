@@ -205,50 +205,52 @@ def display_graph(tab, rate, cost, difficulty, time):
         df = df_meal_N.copy()
     elif tab == "tab_dessert":
         df = df_dessert_N.copy()
-
-    # input rate :
-    if rate == "1":
-        df = df[df["rate"] <= 3]
-    elif rate == "2":
-        df = df[df["rate"] > 3]
-        df = df[df["rate"] <= 4]
-    elif rate == "3":
-        df = df[df["rate"] > 4]
     
-
-    # input cost 
-    if cost == "Assez cher":
-        df = df[df["cost"] == "assez cher"]
-    elif cost == "Coût moyen":
-        df = df[df["cost"] == "Coût moyen"]
-    elif cost == "bon marché":
-        df = df[df["cost"] == "bon marché"]
-
-    # input difficulty :
-    if difficulty == "Niveau moyen":
-        df = df[df["difficulty"] == "Niveau moyen"]
-    elif difficulty == "Facile":
-        df = df[df["difficulty"] == "facile"]
-    elif difficulty == "Trés facile":
-        df = df[df["difficulty"] == "très facile"]
-    elif difficulty == "Difficile":
-        df = df[df["difficulty"] == "difficile"]
-
-
-    # input time : 
-    df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
-    if time == "rapide":
-        df = df[df["time_preparation"] <= 30]
-    elif time == "moyen":
-        df = df[df["time_preparation"] > 30]
-        df = df[df["time_preparation"] <= 90 ]
-    elif time == "long":
-        df = df[df["time_preparation"] > 90]
-
-    
-    df = df.reset_index(drop=True)
-
     if tab != "tab_all":
+
+        # input rate :
+        if rate == "1":
+            df = df[df["rate"] <= 3]
+        elif rate == "2":
+            df = df[df["rate"] > 3]
+            df = df[df["rate"] <= 4]
+        elif rate == "3":
+            df = df[df["rate"] > 4]
+        
+
+        # input cost 
+        if cost == "Assez cher":
+            df = df[df["cost"] == "assez cher"]
+        elif cost == "Coût moyen":
+            df = df[df["cost"] == "Coût moyen"]
+        elif cost == "bon marché":
+            df = df[df["cost"] == "bon marché"]
+
+        # input difficulty :
+        if difficulty == "Niveau moyen":
+            df = df[df["difficulty"] == "Niveau moyen"]
+        elif difficulty == "Facile":
+            df = df[df["difficulty"] == "facile"]
+        elif difficulty == "Trés facile":
+            df = df[df["difficulty"] == "très facile"]
+        elif difficulty == "Difficile":
+            df = df[df["difficulty"] == "difficile"]
+
+    
+    # input time : 
+        df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
+        if time == "rapide":
+            df = df[df["time_preparation"] <= 30]
+        elif time == "moyen":
+            df = df[df["time_preparation"] > 30]
+            df = df[df["time_preparation"] <= 90 ]
+        elif time == "long":
+            df = df[df["time_preparation"] > 90]
+
+        
+        df = df.reset_index(drop=True)
+
+    
         
   
         # récupération list ingrédients marmiton
@@ -297,8 +299,8 @@ def display_graph(tab, rate, cost, difficulty, time):
         fig.update_layout(
                 title_text='Ingrédients les plus fréquents', # title of plot
                 title_x = 0.5,  #centrage du titre
-                xaxis_title_text='ingrédient', # xaxis label
-                yaxis_title_text='distribution', # yaxis label
+                xaxis_title_text='Ingrédients', # xaxis label
+                yaxis_title_text='Distribution', # yaxis label
                 bargap=0.05, # pour la taille de l'espace entre les bins  
                 plot_bgcolor="#EBEDEF",# pour changer la couleur du background
                 hovermode="x",
@@ -326,10 +328,10 @@ def display_graph_rep_cost(tab):
 
 
         fig.update_layout(
-                title_text='Ingrédients les plus fréquents', # title of plot
+                title_text='Répartition des recettes selon le coût', # title of plot
                 title_x = 0.5,  #centrage du titre
-                xaxis_title_text='ingrédient', # xaxis label
-                yaxis_title_text='distribution', # yaxis label
+                xaxis_title_text='Coût', # xaxis label
+                yaxis_title_text='Distribution', # yaxis label
                 bargap=0.1, # pour la taille de l'espace entre les bins  
                 plot_bgcolor="#EBEDEF",# pour changer la couleur du background
                 hovermode="x",
@@ -352,13 +354,13 @@ def display_graph_rep_diff(tab):
 
     if tab != "tab_all":
 
-        fig = px.histogram(df, x="difficulty",  color_discrete_sequence=["darkred"])
+        fig = px.histogram(df, x="difficulty", color_discrete_sequence=["darkred"])
 
         fig.update_layout(
-        title_text='Ingrédients les plus fréquents', # title of plot
+        title_text='Répartion des recettes selon la difficulté', # title of plot
         title_x = 0.5,  #centrage du titre
-        xaxis_title_text='ingrédient', # xaxis label
-        yaxis_title_text='distribution', # yaxis label
+        xaxis_title_text='Difficulté', # xaxis label
+        yaxis_title_text='Distribution', # yaxis label
         bargap=0.1, # pour la taille de l'espace entre les bins  
         plot_bgcolor="#EBEDEF",# pour changer la couleur du background
         hovermode="x",

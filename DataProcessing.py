@@ -39,12 +39,6 @@ def time_format(x):
   else:
     total_min = np.nan
 
-<<<<<<< HEAD
-
-=======
-  
->>>>>>> b92ebb847eb4c92f48fc05342cb3d1c8ff52011d
-  
   return total_min
 
 
