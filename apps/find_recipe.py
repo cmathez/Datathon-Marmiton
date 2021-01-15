@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output
 from app import app
 
     # To maniplutate data
-
+import random
 from DataProcessing import *
 import pandas as pd
 import numpy as np
@@ -41,7 +41,7 @@ df_recipes.drop('gender', axis = 1, inplace = True)
 df_recipes.rename(columns = {"link":"links"}, inplace = True)
 df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
-
+df_ing = pd.read_csv("data/df_ingredients.csv")
 
 
 filters = html.Div(id = "block-filters", children = [
@@ -234,43 +234,94 @@ def get_recommandation_text(value):
 
 @app.callback(Output("reco-original", "children"), [Input("lunch_time", "value")])
 def get_recommandation_ori(value):
+    total_ingredients_=ing_list(df_ing)
+
     if value == "Entrées/Apéritifs":
-        pass
-    elif value == "Plats":
-        pass
-    elif value == "Desserts":
-        pass
-
-
-        #df_ori =
-
+        df=df_recipe_N[df_recipe_N['category']=='aperitif/starter'].copy()
         
-        ori_layout = html.Div(
-            dbc.Row([
-                dbc.Col([
-                    dbc.NavLink(df_ori.loc[0,'title'], className = 'display-reco', active=True, href=df_ori.loc[0,'links'], external_link=True,),
-                    html.Hr(),
-                    html.P(f"Note {df_ori.loc[0,'rate']} | Likes {df_ori.loc[0,'likes']} | Pour {df_ori.loc[0,'number people']} personnes")
 
-                ]),
+    elif value == "Plats":
+        df=df_recipe_N[df_recipe_N['category']=='meal'].copy()
+        
+    elif value == "Desserts":
+        df=df_recipe_N[df_recipe_N['category']=='dessert'].copy()
+        
 
-                dbc.Col([
-                    dbc.NavLink(df_ori.loc[1,'title'], className = 'display-reco', active=True, href=df_ori.loc[1,'links'], external_link=True,),
-                    html.Hr(),
-                    html.P(f"Note {df_ori.loc[1,'rate']} | Likes {df_ori.loc[1,'likes']} | Pour {df_ori.loc[1,'number people']} personnes")
+    df["time_cooking"] = df["time_cooking"].apply(lambda x: time_format(x))
+    df["total_time"] = df["total_time"].apply(lambda x: time_format(x))
+    df["likes"] = df["likes"].apply(lambda x: likes(x))
+    
+
+    df['time_cooking'].fillna(0, inplace = True)
+    df['total_time'].fillna(0,inplace=True)
+    df['time_preparation'].fillna(0,inplace=True)
+
+    l_ingre = []
+    for item in range(len(df["ingredients"])):
+        ingredients = df.loc[item,"ingredients"]
+        l_ = ingredients_clean(ingredients, total_ingredients_)
+        l_ingre.append(l_)
+
+    columns_ = list(df.columns)
+    columns_.append("ingredients_clean")  
+    df = pd.concat([df, pd.DataFrame(l_ingre)], axis=1)
+    df.columns = columns_  
+
+    dico=freq_ingredients(total_ingredients(df))
+    #df_ori =
+
+    l_ind=[(v,k) for k,v in dico.items()]
+
+    l_ind=sorted(l_ind)
+
+    freq=list(set([l_ind[i][0] for i in range(len(l_ind))]))
+
+    freq_min=freq[:2]
+    ing = [k for k,v in dico.items() if v in freq_min]
+
+    l_ing = random.sample(ing,10)
+
+    l_ind=[]
+
+    for ing in l_ing :
+        for i in range(len(df)):
+            if ing in df.loc[i,'ingredients_clean']:
+                l_ind.append(i)
+
+    df_audacieux = df[df.index.isin(l_ind)]
+
+    df_audacieux=df_audacieux[df_audacieux['rate']>=4].reset_index(drop=True)
+
+    c_ind=random.sample(range(0,len(df_audacieux)),3)
+
+    df_ori= df_audacieux[df_audacieux.index.isin(c_ind)].head(3)
+
+    ori_layout = html.Div(
+        dbc.Row([
+            dbc.Col([
+                dbc.NavLink(df_ori.loc[0,'title'], className = 'display-reco', active=True, href=df_ori.loc[0,'links'], external_link=True,),
+                html.Hr(),
+                html.P(f"Note {df_ori.loc[0,'rate']} | Likes {df_ori.loc[0,'likes']} | Pour {df_ori.loc[0,'number people']} personnes")
+
+            ]),
+
+            dbc.Col([
+                dbc.NavLink(df_ori.loc[1,'title'], className = 'display-reco', active=True, href=df_ori.loc[1,'links'], external_link=True,),
+                html.Hr(),
+                html.P(f"Note {df_ori.loc[1,'rate']} | Likes {df_ori.loc[1,'likes']} | Pour {df_ori.loc[1,'number people']} personnes")
 
 
-                ]),
+            ]),
 
-                dbc.Col([
-                    dbc.NavLink(df_ori.loc[2,'title'], className = 'display-reco', active=True, href=df_ori.loc[2,'links'], external_link=True,),
-                    html.Hr(),
-                    html.P(f"Note {df_ori.loc[2,'rate']} | Likes {df_ori.loc[2,'likes']} | Pour {df_ori.loc[2,'number people']} personnes")
+            dbc.Col([
+                dbc.NavLink(df_ori.loc[2,'title'], className = 'display-reco', active=True, href=df_ori.loc[2,'links'], external_link=True,),
+                html.Hr(),
+                html.P(f"Note {df_ori.loc[2,'rate']} | Likes {df_ori.loc[2,'likes']} | Pour {df_ori.loc[2,'number people']} personnes")
 
 
-                ])
             ])
-        )
+        ])
+    )
     return ori_layout
 
 
@@ -285,38 +336,74 @@ Input("cout", "value"),
 Input("difficulty", "value"),
 Input("time", "value")])
 def get_reco_filter(cat, ing1, ing2, ing3, nb, cost, diff, time):
-    return html.P("La recette demandée n'est pas disponible")
+
+    df = df_recipes_N.copy()
+
+    if ing1 != "":
+        ing1=ing1.lower()
+        df= df[df['ingredients'].str.contains(ing1)]
     
 
-    dff = df.copy()
-    df_reco = choose_recipe(DataProcessing(dff),value)
-    reco_layout = html.Div(
-        dbc.Row([
-            dbc.Col([
-                dbc.NavLink(df_reco.loc[0,'title'], className = 'display-reco', active=True, href=df_reco.loc[0,'links'], external_link=True,),
-                html.Hr(),
-                html.P(f"Note {df_reco.loc[0,'rate']} | Likes {df_reco.loc[0,'likes']} | Pour {df_reco.loc[0,'number people']} personnes")
+    if ing2 != "":
+        ing2=ing2.lower()
+        df= df[df['ingredients'].str.contains(ing2)]
+    
+    if ing3 != "":
+        ing3=ing3.lower()
+        df=df[df['ingredients'].str.contains(ing3)]
 
-            ]),
+    
+    if nb_pers!='':
+        nb_pers=int(nb_pers)
+        df=df[df['number people']>=nb_pers]
 
-            dbc.Col([
-                dbc.NavLink(df_reco.loc[1,'title'], className = 'display-reco', active=True, href=df_reco.loc[1,'links'], external_link=True,),
-                html.Hr(),
-                html.P(f"Note {df_reco.loc[1,'rate']} | Likes {df_reco.loc[1,'likes']} | Pour {df_reco.loc[1,'number people']} personnes")
+    if cout!='':
+        df=df[df['cost']==cout]
 
+    if diff !='':
+        df[df['difficulty']==diff]
 
-            ]),
+    if categ!='':
+        df=df[df['category']==categ]
 
-            dbc.Col([
-                dbc.NavLink(df_reco.loc[2,'title'], className = 'display-reco', active=True, href=df_reco.loc[2,'links'], external_link=True,),
-                html.Hr(),
-                html.P(f"Note {df_reco.loc[2,'rate']} | Likes {df_reco.loc[2,'likes']} | Pour {df_reco.loc[2,'number people']} personnes")
-
-
-            ])
-        ])
-    )
-
-    return reco_layout
+    if tps!='':
+        tps=int(tps)
+        df=df[df['time_preparation']<=tps]
 
 
+        df_filter=df.sort_values(by='rate', ascending=False).head(3)
+
+
+    #df_filter
+
+    filter_layout = html.Div(
+                dbc.Row([
+                    dbc.Col([
+                        dbc.NavLink(df_filter.loc[0,'title'], className = 'display-reco', active=True, href=df_filter.loc[0,'links'], external_link=True,),
+                        html.Hr(),
+                        html.P(f"Note {df_filter.loc[0,'rate']} | Likes {df_filter.loc[0,'likes']} | Pour {df_filter.loc[0,'number people']} personnes")
+
+                    ]),
+
+                    dbc.Col([
+                        dbc.NavLink(df_filter.loc[1,'title'], className = 'display-reco', active=True, href=df_filter.loc[1,'links'], external_link=True,),
+                        html.Hr(),
+                        html.P(f"Note {df_filter.loc[1,'rate']} | Likes {df_filter.loc[1,'likes']} | Pour {df_filter.loc[1,'number people']} personnes")
+
+
+                    ]),
+
+                    dbc.Col([
+                        dbc.NavLink(df_filter.loc[2,'title'], className = 'display-reco', active=True, href=df_filter.loc[2,'links'], external_link=True,),
+                        html.Hr(),
+                        html.P(f"Note {df_filter.loc[2,'rate']} | Likes {df_filter.loc[2,'likes']} | Pour {df_filter.loc[2,'number people']} personnes")
+
+
+                    ])
+                ])
+            )
+
+    if len(df_filter)==0:
+        return html.P("pas de recette trouvée!")
+    else:
+        return filter_layout
