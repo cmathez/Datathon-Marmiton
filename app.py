@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from apps import analyses, find_recipe, trend
-from app import app
+from dash import app
 
 ### Create Dash architecture ###
 
