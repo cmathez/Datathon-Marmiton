@@ -291,10 +291,7 @@ def display_graph(tab, rate, cost, difficulty, time):
         columns_ = list(df.columns)
         columns_.append("ingredients_clean")  
         df = pd.concat([df, pd.DataFrame(l_ingre)], axis=1)
-        print(df)   
-        df.columns = columns_
-        print(df.shape)
-        
+        df.columns = columns_  
         
         # calcul des fréquences:
         keys = []
@@ -306,21 +303,24 @@ def display_graph(tab, rate, cost, difficulty, time):
         fig = go.Figure()
 
         fig.add_trace(go.Bar(x=keys, y=nb_frequencies,
-            marker_color = "darkred", # couleur des bins
-            #xbins=dict(start=1.5, end=4.5), autobinx=False),
+            marker_color = "darkred"
         ))
 
 
         fig.update_layout(
                 title_text='Ingrédients les plus fréquents', # title of plot
                 title_x = 0.5,  #centrage du titre
-                xaxis_title_text='Ingrédients', # xaxis label
-                yaxis_title_text='Distribution', # yaxis label
-                bargap=0.05, # pour la taille de l'espace entre les bins  
-                plot_bgcolor="#EBEDEF",# pour changer la couleur du background
+                xaxis_title_text='ingrédient', # xaxis label
+                yaxis_title_text='distribution', # yaxis label
+                bargap=0.07, # pour la taille de l'espace entre les bins  
+                plot_bgcolor="#303030",
+                paper_bgcolor='#262626',
                 hovermode="x",
                 width = 800,
+                font=dict(color='white')
                 )
+        fig.update_traces(marker=dict(line=dict(width=0)))
+        fig.update_yaxes(showgrid=True, gridwidth=0.01, gridcolor='grey')
 
         return fig
 
@@ -347,10 +347,13 @@ def display_graph_rep_cost(tab):
                 title_x = 0.5,  #centrage du titre
                 xaxis_title_text='Coût', # xaxis label
                 yaxis_title_text='Distribution', # yaxis label
-                bargap=0.1, # pour la taille de l'espace entre les bins  
-                plot_bgcolor="#EBEDEF",# pour changer la couleur du background
+                bargap=0.07, # pour la taille de l'espace entre les bins  
+                plot_bgcolor="#303030",
+                paper_bgcolor='#262626',# pour changer la couleur du background
                 hovermode="x",
                 width = 400,
+                font=dict(color='white')
+                )
                 )
 
         return fig
@@ -376,10 +379,11 @@ def display_graph_rep_diff(tab):
         title_x = 0.5,  #centrage du titre
         xaxis_title_text='Difficulté', # xaxis label
         yaxis_title_text='Distribution', # yaxis label
-        bargap=0.1, # pour la taille de l'espace entre les bins  
-        plot_bgcolor="#EBEDEF",# pour changer la couleur du background
+        plot_bgcolor="#303030",
+        paper_bgcolor='#262626',# pour changer la couleur du background
         hovermode="x",
-        width = 500,
+        width = 400,
+        font=dict(color='white')
         )
 
         return fig
