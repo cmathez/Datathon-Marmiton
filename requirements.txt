@@ -1,8 +1,0 @@
-dash-bootstrap-components
-numpy
-pandas
-scikit-learn
-nltk
-django
-gunicorn
-django-heroku
