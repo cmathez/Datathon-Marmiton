@@ -174,7 +174,7 @@ tab_all_content = dbc.Card(
            html.Div([
                html.H3('Wordcloud des étapes de préparation selon le niveau de difficulté'),
                dbc.Row([
-                   dbc.Col([html.P('Niveau très facile'),html.Img(src = "wordcloud\wcloud_tresfacile_tfidf.png", alt = 'Image home', height = "300")]),
+                   dbc.Col([html.P('Niveau très facile'),html.Img(src = "wordcloud/wcloud_tresfacile_tfidf.png", alt = 'Image home', height = "300")]),
                    dbc.Col([html.P('Niveau facile'),html.Img(src = "wordcloud\wcloud_facile_tfidf.png", alt = 'Image home', height = "300")])
                    ]),
            ]),
