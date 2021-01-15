@@ -45,7 +45,34 @@ df_recipes.rename(columns = {"link":"links"}, inplace = True)
 df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
 
+##### Creation static figure #######
 
+## Comparison 
+
+df_s = df_starter_N.copy()
+df_m = df_meal_N.copy()
+df_d = df_dessert_N.copy()
+
+dff_s = get_df_to_figcomp(df_s)
+dff_m = get_df_to_figcomp(df_m)
+dff_d = get_df_to_figcomp(df_d)
+
+figcomp = go.Figure(data=[
+    go.Bar(name='Entrées/Apéritif', x=dff_s['theme'], y=dff_s['moy']),
+    go.Bar(name='Plat', x=dff_m['theme'], y=dff_m['moy']),
+    go.Bar(name='Dessert', x=dff_d['theme'], y=dff_d['moy'])
+])
+
+figcomp.update_layout(barmode='group',
+                  title=
+                  dict(text="Difficulté, Note et Coût moyen selon la catégorie",
+                       font=dict(size=26)),
+                  yaxis_title="Moyenne",
+                  font=dict(size=16,color='black'),
+                  legend=dict(
+                      font=dict(size=20,color="black")))
+
+##### Create layout #####
 
 filters = html.Div(id = "block-filters", children = [
                     html.P('Note :', className = 'label-filter'),
@@ -142,7 +169,7 @@ tab_all_content = dbc.Card(
         [
            html.Div([
                html.H3('Comparaison selon la catégorie de recettes'),
-               dcc.Graph(figcomp)
+               dcc.Graph(figure = figcomp)
            ]),
            html.Div([
                html.H3('Wordcloud des étapes de préparation selon le niveau de difficulté'),
@@ -353,7 +380,6 @@ def display_graph_rep_cost(tab):
                 hovermode="x",
                 width = 400,
                 font=dict(color='white')
-                )
                 )
 
         return fig

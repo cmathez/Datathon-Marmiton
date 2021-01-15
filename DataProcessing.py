@@ -219,3 +219,35 @@ def choose_recipe(df,url):
   df_ind =df_ind.head(3) 
 
   return df_ind.reset_index(drop=True)
+
+def moy(df):
+  return round(df['sum']/df['total'],2)
+
+def get_df_to_figcomp(df):
+  df["Xmas recipe"]  = "Noël"
+  df['diff_num'] = df['difficulty'].apply(lambda x : {'très facile':1.25, 'facile':2.5, 'Niveau moyen':3.75, 'difficile':5}.get(x,0))
+  df['cost_num'] = df['cost'].apply(lambda x : {'bon marché':1.66, 'Coût moyen':3.3, 'assez cher':5}.get(x,0))
+  df_moy_diff=df.groupby(['Xmas recipe','category'], as_index=False).diff_num.sum()
+  df_tot_diff=df.groupby(['Xmas recipe','category'], as_index=False).rate.count()
+  dff_diff=pd.concat([df_moy_diff, df_tot_diff['rate']], axis=1).rename(columns={'category':'categ','Xmas recipe':'gend','diff_num':'sum','rate':'total'})
+
+  df_moy_cost=df.groupby(['Xmas recipe','category'], as_index=False).cost_num.sum()
+  df_tot_cost=df.groupby(['Xmas recipe','category'], as_index=False).rate.count()
+  dff_cost=pd.concat([df_moy_cost, df_tot_cost['rate']], axis=1).rename(columns={'category':'categ','Xmas recipe':'gend','cost_num':'sum','rate':'total'})
+
+  df_moy_rate=df.groupby(['Xmas recipe','category'], as_index=False).rate.sum()
+  df_tot_rate=df.groupby(['Xmas recipe','category'], as_index=False).diff_num.count()
+  dff_rate=pd.concat([df_moy_rate, df_tot_rate['diff_num']], axis=1).rename(columns={'category':'categ','Xmas recipe':'gend','rate':'sum','diff_num':'total'})
+
+  dff_diff['moy']=dff_diff.apply(moy,axis=1)
+  dff_diff['theme']='Difficulty'
+
+  dff_cost['moy']=dff_cost.apply(moy,axis=1)
+  dff_cost['theme']='Coût'
+
+  dff_rate['moy']=dff_rate.apply(moy,axis=1)
+  dff_rate['theme']='Note'
+
+  dff = pd.concat([dff_diff,dff_cost,dff_rate])
+
+  return dff

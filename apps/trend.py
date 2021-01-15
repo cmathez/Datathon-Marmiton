@@ -73,14 +73,14 @@ card = dbc.Card(
 tab_trend_content = html.Div([
     html.Div(
     [   
-        dbc.Input(id="enter-ing", placeholder="Entre un ingrédient ...", type="text", debounce=True),
+        dbc.Input(id="enter-ing", placeholder="Entre un ingrédient ...", type="text", value = "chocolat" , debounce=True),
         html.Br(),
         dcc.Graph(id="result-enter-ing"),
     ])
 ,
     html.Div([
         html.H3("Les notes diffèrent elles selon si c'est une recette de Noël"),
-        dcc.Graph(fig_boxplot)
+        dcc.Graph(figure = fig_boxplot)
     ])
 ])
 
@@ -96,7 +96,7 @@ def display_tab_content(active_tab):
 
 
 @app.callback(Output("result-enter-ing", "figure"), [Input("enter-ing", "value")])
-def output_text(value):
+def display_pie(value):
 
 
     list_ing_recipe_N = df_recipes_N['ingredients'].to_list()
@@ -115,3 +115,5 @@ def output_text(value):
         values = [freq_ing_N, freq_ing]
         fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
         return fig
+
+        

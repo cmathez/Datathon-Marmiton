@@ -45,28 +45,75 @@ df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
 
 filters = html.Div(id = "block-filters", children = [
-                    dcc.RadioItems(         # to create filter (by day, week, month, year)
-                        id='crossfilter',
-                        options=[{'label': i, 'value': i} for i in ['day', 'week', 'month', 'year']],
-                        value='month',
-                        labelStyle={'display': 'inline-block'})]
+                    html.P('Catégories :'),
+                    dbc.RadioItems(         # to create filter (by day, week, month, year)
+                        id='category',
+                        options=[{'label': i, 'value': i} for i in ['Entrées/Apéritifs', 'Plats', 'Desserts','Tout']],
+                        value='Tout',
+                        inline=True,
+                        ),
+                    html.Hr(),
+                    html.P('Ingredients :'),
+                    dbc.Row([
+                        dbc.Col([
+                            dbc.Input(id="ingredient1", placeholder="1er Ingrédient...", type="text")
+                        ]),
+                        dbc.Col([
+                            dbc.Input(id="ingredient2", placeholder="2e Ingrédient...", type="text")
+                        ]),
+                        dbc.Col([
+                            dbc.Input(id="ingredient3", placeholder="3e Ingrédient...", type="text")
+                        ])
+                    ]),
+                    html.Hr(),
+                    html.P('Nombre de personnes :'),
+                    dbc.Input(id="nbpers", placeholder="Nombre de personnes...", type="text"),
+                    html.Hr(),
+                    html.P('Coût :'),
+                    dbc.RadioItems(         
+                        id='cout',
+                        options=[{'label': i, 'value': i} for i in ['€', '€€', '€€€','Tout']],
+                        value='Tout',
+                        inline=True,),
+                        html.Hr(),
+                    html.P('Difficulté :'),
+                    dbc.RadioItems(         
+                        id='difficulty',
+                        options=[{'label': i, 'value': i} for i in ['Très facile', 'Facile', 'Moyen','Difficile','Tout']],
+                        value='Tout',
+                        inline=True,),
+                        html.Hr(),
+                    html.P('Temps de préparation :'),
+                    dcc.Slider(
+                        id = "time",
+                        min=0,
+                        max=120,
+                        step=None,
+                        marks={
+                            0: '',
+                            15: '15 min',
+                            30: '30 min',
+                            45: '45 min',
+                            60: '1h',
+                            90: '1h30',
+                            120 :'> 2h',
+                        },
+                        value=15
+                    )  
+                    ]
                 )
 
 tab_filter_content = dbc.Card(
     dbc.CardBody(
         [
            filters,
-           dbc.Jumbotron(
-        [
-            html.H1("404: Not found", className="text-danger"),
-            html.Hr(),
-            html.P(f"The pathname  was not recognised..."),
+           html.Br(),
+           html.Div(id='reco_filter'),
         ]
     )
            
-        ]
-    ),
-)
+
+    )
 
 tab_original_content = dbc.Card(
     dbc.CardBody(
@@ -149,7 +196,7 @@ def display_tab_content(active_tab):
     )
 
 @app.callback(Output("reco-text", "children"), [Input("text-enter", "value")])
-def get_recommandation(value):
+def get_recommandation_text(value):
     if len(df[df['links']==value])==0:
         return html.P("La recette demandée n'est pas disponible")
     
@@ -186,7 +233,7 @@ def get_recommandation(value):
         return reco_layout
 
 @app.callback(Output("reco-original", "children"), [Input("lunch_time", "value")])
-def output_text(value):
+def get_recommandation_ori(value):
     if value == "Entrées/Apéritifs":
         pass
     elif value == "Plats":
@@ -225,5 +272,51 @@ def output_text(value):
             ])
         )
     return ori_layout
+
+
+
+@app.callback(Output("reco_filter", "children"), 
+[Input("category", "value"),
+Input("ingredient1", "value"),
+Input("ingredient2", "value"),
+Input("ingredient2", "value"),
+Input("nbpers", "value"),
+Input("cout", "value"),
+Input("difficulty", "value"),
+Input("time", "value")])
+def get_reco_filter(cat, ing1, ing2, ing3, nb, cost, diff, time):
+    return html.P("La recette demandée n'est pas disponible")
+    
+
+    dff = df.copy()
+    df_reco = choose_recipe(DataProcessing(dff),value)
+    reco_layout = html.Div(
+        dbc.Row([
+            dbc.Col([
+                dbc.NavLink(df_reco.loc[0,'title'], className = 'display-reco', active=True, href=df_reco.loc[0,'links'], external_link=True,),
+                html.Hr(),
+                html.P(f"Note {df_reco.loc[0,'rate']} | Likes {df_reco.loc[0,'likes']} | Pour {df_reco.loc[0,'number people']} personnes")
+
+            ]),
+
+            dbc.Col([
+                dbc.NavLink(df_reco.loc[1,'title'], className = 'display-reco', active=True, href=df_reco.loc[1,'links'], external_link=True,),
+                html.Hr(),
+                html.P(f"Note {df_reco.loc[1,'rate']} | Likes {df_reco.loc[1,'likes']} | Pour {df_reco.loc[1,'number people']} personnes")
+
+
+            ]),
+
+            dbc.Col([
+                dbc.NavLink(df_reco.loc[2,'title'], className = 'display-reco', active=True, href=df_reco.loc[2,'links'], external_link=True,),
+                html.Hr(),
+                html.P(f"Note {df_reco.loc[2,'rate']} | Likes {df_reco.loc[2,'likes']} | Pour {df_reco.loc[2,'number people']} personnes")
+
+
+            ])
+        ])
+    )
+
+    return reco_layout
 
 
