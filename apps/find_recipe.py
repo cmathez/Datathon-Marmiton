@@ -73,13 +73,15 @@ tab_original_content = dbc.Card(
         [
 
         dbc.Select(
-            id="select",
+            id="lunch_time",
             options=[
-                {"label": "Entrée", "value": "1"},
-                {"label": "Plat", "value": "2"},
-                {"label": "Dessert", "value": "3"},
-    ],
+                {"label": "Entrées/Apéritifs", "value": "Entrées/Apéritifs"},
+                {"label": "Plats", "value": "Plats"},
+                {"label": "Desserts", "value": "Desserts"},
+        ],
+        value = "Entrées/Apéritifs"
 ),
+           html.Br(),
            html.Div(id='reco_original'),
         ]
     ),
@@ -183,6 +185,45 @@ def get_recommandation(value):
 
         return reco_layout
 
-@app.callback(Output("reco-original", "children"), [Input("select", "value")])
+@app.callback(Output("reco-original", "children"), [Input("lunch_time", "value")])
 def output_text(value):
-    return html.P(value)
+    if value == "Entrées/Apéritifs":
+        pass
+    elif value == "Plats":
+        pass
+    elif value == "Desserts":
+        pass
+
+
+        #df_ori =
+
+        
+        ori_layout = html.Div(
+            dbc.Row([
+                dbc.Col([
+                    dbc.NavLink(df_ori.loc[0,'title'], className = 'display-reco', active=True, href=df_ori.loc[0,'links'], external_link=True,),
+                    html.Hr(),
+                    html.P(f"Note {df_ori.loc[0,'rate']} | Likes {df_ori.loc[0,'likes']} | Pour {df_ori.loc[0,'number people']} personnes")
+
+                ]),
+
+                dbc.Col([
+                    dbc.NavLink(df_ori.loc[1,'title'], className = 'display-reco', active=True, href=df_ori.loc[1,'links'], external_link=True,),
+                    html.Hr(),
+                    html.P(f"Note {df_ori.loc[1,'rate']} | Likes {df_ori.loc[1,'likes']} | Pour {df_ori.loc[1,'number people']} personnes")
+
+
+                ]),
+
+                dbc.Col([
+                    dbc.NavLink(df_ori.loc[2,'title'], className = 'display-reco', active=True, href=df_ori.loc[2,'links'], external_link=True,),
+                    html.Hr(),
+                    html.P(f"Note {df_ori.loc[2,'rate']} | Likes {df_ori.loc[2,'likes']} | Pour {df_ori.loc[2,'number people']} personnes")
+
+
+                ])
+            ])
+        )
+    return ori_layout
+
+
