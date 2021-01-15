@@ -260,10 +260,7 @@ def display_graph(tab, rate, cost, difficulty, time):
         columns_ = list(df.columns)
         columns_.append("ingredients_clean")  
         df = pd.concat([df, pd.DataFrame(l_ingre)], axis=1)
-        print(df)   
-        df.columns = columns_
-        print(df.shape)
-        
+        df.columns = columns_  
         
         # calcul des fréquences:
         keys = []
@@ -285,11 +282,15 @@ def display_graph(tab, rate, cost, difficulty, time):
                 title_x = 0.5,  #centrage du titre
                 xaxis_title_text='ingrédient', # xaxis label
                 yaxis_title_text='distribution', # yaxis label
-                bargap=0.05, # pour la taille de l'espace entre les bins  
-                plot_bgcolor="#EBEDEF",# pour changer la couleur du background
+                bargap=0.07, # pour la taille de l'espace entre les bins  
+                plot_bgcolor="#303030",
+                paper_bgcolor='#262626',
                 hovermode="x",
                 width = 800,
+                font=dict(color='white')
                 )
+        fig.update_traces(marker=dict(line=dict(width=0)))
+        fig.update_yaxes(showgrid=True, gridwidth=0.01, gridcolor='grey')
 
         return fig
 

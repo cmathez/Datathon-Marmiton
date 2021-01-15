@@ -15,12 +15,12 @@ jumbotron = dbc.Jumbotron(
         dbc.Row(
                 [
                     dbc.Col(
-                            html.Img(src = "https://www.cuisinevault.com/wp-content/uploads/2018/12/Christmas-Cooking-Guide.jpg", alt = 'Image home', height = "300")
+                            html.Img(id = "img-head", src = "https://res.cloudinary.com/dx7hmnrvx/image/upload/v1610704205/imageonline-co-roundcorner_2_ucxmxq.png", alt = 'Image home', height = "300")
                                 
                         ),
                     dbc.Col([html.H1("Les recettes de Noël en graphiques", className="display-3")
                 ],
-                align="center",
+                align="center", style={"height": "20vh"}
             ),
         html.Hr(className="my-2"),
         #html.P(dbc.Button("Learn more", color="primary"), className="lead"),
