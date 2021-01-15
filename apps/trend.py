@@ -47,7 +47,11 @@ df_recipes.rename(columns = {"link":"links"}, inplace = True)
 df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
 
+###### create static figure
 
+dff=df.copy()
+
+fig_boxplot = px.box(dff, x="category", y="rate", color='Xmas recipe')
 
 card = dbc.Card(
     [
@@ -66,13 +70,19 @@ card = dbc.Card(
     ]
 )
 
-tab_trend_content = html.Div(
+tab_trend_content = html.Div([
+    html.Div(
     [   
         dbc.Input(id="enter-ing", placeholder="Entre un ingrédient ...", type="text", debounce=True),
         html.Br(),
         dcc.Graph(id="result-enter-ing"),
-    ]
-)
+    ])
+,
+    html.Div([
+        html.H3("Les notes diffèrent elles selon si c'est une recette de Noël"),
+        dcc.Graph(fig_boxplot)
+    ])
+])
 
 layout = html.Div([card])
 

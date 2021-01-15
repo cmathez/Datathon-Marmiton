@@ -140,10 +140,25 @@ tab_theme_content = dbc.Card(
 tab_all_content = dbc.Card(
     dbc.CardBody(
         [
-           html.P('Test_raw'),
+           html.Div([
+               html.H3('Comparaison selon la catégorie de recettes'),
+               dcc.Graph(figcomp)
+           ]),
+           html.Div([
+               html.H3('Wordcloud des étapes de préparation selon le niveau de difficulté'),
+               dbc.Row([
+                   dbc.Col([html.P('Niveau très facile'),html.Img(src = "", alt = 'Image home', height = "300")]),
+                   dbc.Col([html.P('Niveau facile'),html.Img(src = "", alt = 'Image home', height = "300")])
+                   ]),
+           ]),
+               dbc.Row([
+                   dbc.Col([html.P('Niveau moyen'),html.Img(src = "", alt = 'Image home', height = "300"),
+                   dbc.Col([html.P('Niveau difficile'),html.Img(src = "", alt = 'Image home', height = "300")
+                   ])
+               ])
+            ]),
         ]
-    ),
-)
+    ))
 
 
 card = dbc.Card(
