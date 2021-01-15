@@ -18,11 +18,11 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 
-df_starter_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_entrees.csv")
-df_meal_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats.csv")
-df_dessert_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_desserts.csv")
+df_starter_N = pd.read_csv("data/df_entrees.csv")
+df_meal_N = pd.read_csv("data/df_plats.csv")
+df_dessert_N = pd.read_csv("data/df_desserts.csv")
 
-df_ingredients = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_ingredients.csv")
+df_ingredients = pd.read_csv("data/df_ingredients.csv")
 
 
 df_recipes_N = pd.concat([df_starter_N,df_meal_N,df_dessert_N])
@@ -31,11 +31,11 @@ df_recipes_N['Xmas recipe'] = True
 
 ## No christmas data
 
-df_starter = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_entrees_pas_noel.csv")
+df_starter = pd.read_csv("data/df_entrees_pas_noel.csv")
 df_starter['category']='aperitif/starter'
-df_meal = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats_pas_noel.csv")
+df_meal = pd.read_csv("data/df_plats_pas_noel.csv")
 df_meal['category']='meal'
-df_desserts = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_desserts_pas_noel.csv")
+df_desserts = pd.read_csv("data/df_desserts_pas_noel.csv")
 df_desserts['category'] = 'dessert'
 
 df_recipes = pd.concat([df_starter,df_meal,df_desserts])
@@ -48,6 +48,7 @@ df = pd.concat([df_recipes_N, df_recipes]).reset_index()
 
 
 filters = html.Div(id = "block-filters", children = [
+                    html.P('Note :', className = 'label-filter'),
                     dbc.Select(
                         id="rate",
                         options=[
@@ -58,6 +59,7 @@ filters = html.Div(id = "block-filters", children = [
                     ], value = "Tout"
                     ),
                     html.Hr(),
+                    html.P('Coût :', className = 'label-filter'),
                     dbc.Select(
                         id="cost",
                         options=[
@@ -68,6 +70,7 @@ filters = html.Div(id = "block-filters", children = [
                     ], value = "Tout"
                     ),
                     html.Hr(),
+                    html.P('Difficulté :', className = 'label-filter'),
                     dbc.Select(
                         id="difficulty",
                         options=[
@@ -79,6 +82,7 @@ filters = html.Div(id = "block-filters", children = [
                     ], value = "Tout"
                     ),
                     html.Hr(),
+                    html.P('Temps de préparation :', className = 'label-filter'),
                     dbc.Select(
                         id="time",
                         options=[
@@ -91,13 +95,19 @@ filters = html.Div(id = "block-filters", children = [
                     ),
 ])
 
-title_1 = dbc.Jumbotron(
+title_1 = dbc.Jumbotron(className = 'title', children = 
         [
             html.H1("Quels ingrédients dans vos plats ?", className = "text-noel"),
         ]
+)
+
+title_2 = dbc.Jumbotron(className = 'title', children =
+        [
+            html.H1("La répartition des recettes de Noël !", className = "text-noel"),
+        ]
     )
 
-title_2 = dbc.Jumbotron(
+title_3 = dbc.Jumbotron(className = 'title', children =
         [
             html.H1("La difficulté dans les préparations...", className = "text-noel"),
         ]
@@ -113,7 +123,11 @@ tab_theme_content = dbc.Card(
                 dbc.Col(filters, width={"size" : 2}),
             ]),
             html.Hr(className="my-2"),
-            title_2
+            title_2,
+            dbc.Row([
+                dbc.Col(dcc.Graph(id = "graph_cost"), width={"size" : 5}),
+                dbc.Col(dcc.Graph(id = "graph_diff"), width={"size" : 6}),
+            ]),
             ]
         )
            
@@ -191,50 +205,52 @@ def display_graph(tab, rate, cost, difficulty, time):
         df = df_meal_N.copy()
     elif tab == "tab_dessert":
         df = df_dessert_N.copy()
-
-    # input rate :
-    if rate == "1":
-        df = df[df["rate"] <= 3]
-    elif rate == "2":
-        df = df[df["rate"] > 3]
-        df = df[df["rate"] <= 4]
-    elif rate == "3":
-        df = df[df["rate"] > 4]
     
-
-    # input cost 
-    if cost == "Assez cher":
-        df = df[df["cost"] == "assez cher"]
-    elif cost == "Coût moyen":
-        df = df[df["cost"] == "Coût moyen"]
-    elif cost == "bon marché":
-        df = df[df["cost"] == "bon marché"]
-
-    # input difficulty :
-    if difficulty == "Niveau moyen":
-        df = df[df["difficulty"] == "Niveau moyen"]
-    elif difficulty == "Facile":
-        df = df[df["difficulty"] == "facile"]
-    elif difficulty == "Trés facile":
-        df = df[df["difficulty"] == "très facile"]
-    elif difficulty == "Difficile":
-        df = df[df["difficulty"] == "difficile"]
-
-
-    # input time : 
-    df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
-    if time == "rapide":
-        df = df[df["time_preparation"] <= 30]
-    elif time == "moyen":
-        df = df[df["time_preparation"] > 30]
-        df = df[df["time_preparation"] <= 90 ]
-    elif time == "long":
-        df = df[df["time_preparation"] > 90]
-
-    
-    df = df.reset_index(drop=True)
-
     if tab != "tab_all":
+
+        # input rate :
+        if rate == "1":
+            df = df[df["rate"] <= 3]
+        elif rate == "2":
+            df = df[df["rate"] > 3]
+            df = df[df["rate"] <= 4]
+        elif rate == "3":
+            df = df[df["rate"] > 4]
+        
+
+        # input cost 
+        if cost == "Assez cher":
+            df = df[df["cost"] == "assez cher"]
+        elif cost == "Coût moyen":
+            df = df[df["cost"] == "Coût moyen"]
+        elif cost == "bon marché":
+            df = df[df["cost"] == "bon marché"]
+
+        # input difficulty :
+        if difficulty == "Niveau moyen":
+            df = df[df["difficulty"] == "Niveau moyen"]
+        elif difficulty == "Facile":
+            df = df[df["difficulty"] == "facile"]
+        elif difficulty == "Trés facile":
+            df = df[df["difficulty"] == "très facile"]
+        elif difficulty == "Difficile":
+            df = df[df["difficulty"] == "difficile"]
+
+    
+    # input time : 
+        df["time_preparation"] = df["time_preparation"].apply(lambda x: time_format(x))
+        if time == "rapide":
+            df = df[df["time_preparation"] <= 30]
+        elif time == "moyen":
+            df = df[df["time_preparation"] > 30]
+            df = df[df["time_preparation"] <= 90 ]
+        elif time == "long":
+            df = df[df["time_preparation"] > 90]
+
+        
+        df = df.reset_index(drop=True)
+
+    
         
   
         # récupération list ingrédients marmiton
@@ -280,11 +296,18 @@ def display_graph(tab, rate, cost, difficulty, time):
         fig.update_layout(
                 title_text='Ingrédients les plus fréquents', # title of plot
                 title_x = 0.5,  #centrage du titre
+<<<<<<< HEAD
                 xaxis_title_text='ingrédient', # xaxis label
                 yaxis_title_text='distribution', # yaxis label
                 bargap=0.07, # pour la taille de l'espace entre les bins  
                 plot_bgcolor="#303030",
                 paper_bgcolor='#262626',
+=======
+                xaxis_title_text='Ingrédients', # xaxis label
+                yaxis_title_text='Distribution', # yaxis label
+                bargap=0.05, # pour la taille de l'espace entre les bins  
+                plot_bgcolor="#EBEDEF",# pour changer la couleur du background
+>>>>>>> 484822610ece625fe794374cbf24638d881b7764
                 hovermode="x",
                 width = 800,
                 font=dict(color='white')
@@ -295,4 +318,64 @@ def display_graph(tab, rate, cost, difficulty, time):
         return fig
 
 
+@app.callback(
+    Output("graph_cost", "figure"), 
+    [Input("card-tabs", "active_tab"),]
+)
+def display_graph_rep_cost(tab):
+    if tab == "tab_starter":
+        df = df_starter_N.copy()
+    elif tab == "tab_meal":
+        df = df_meal_N.copy()
+    elif tab == "tab_dessert":
+        df = df_dessert_N.copy()
+
+    if tab != "tab_all":
+
+        fig = px.histogram(df, x="cost", color_discrete_sequence=["darkred"] )
+
+
+        fig.update_layout(
+                title_text='Répartition des recettes selon le coût', # title of plot
+                title_x = 0.5,  #centrage du titre
+                xaxis_title_text='Coût', # xaxis label
+                yaxis_title_text='Distribution', # yaxis label
+                bargap=0.1, # pour la taille de l'espace entre les bins  
+                plot_bgcolor="#EBEDEF",# pour changer la couleur du background
+                hovermode="x",
+                width = 400,
+                )
+
+        return fig
+
+@app.callback(
+    Output("graph_diff", "figure"), 
+    [Input("card-tabs", "active_tab"),]
+)
+def display_graph_rep_diff(tab):
+    if tab == "tab_starter":
+        df = df_starter_N.copy()
+    elif tab == "tab_meal":
+        df = df_meal_N.copy()
+    elif tab == "tab_dessert":
+        df = df_dessert_N.copy()
+
+    if tab != "tab_all":
+
+        fig = px.histogram(df, x="difficulty", color_discrete_sequence=["darkred"])
+
+        fig.update_layout(
+        title_text='Répartion des recettes selon la difficulté', # title of plot
+        title_x = 0.5,  #centrage du titre
+        xaxis_title_text='Difficulté', # xaxis label
+        yaxis_title_text='Distribution', # yaxis label
+        bargap=0.1, # pour la taille de l'espace entre les bins  
+        plot_bgcolor="#EBEDEF",# pour changer la couleur du background
+        hovermode="x",
+        width = 500,
+        )
+
+        return fig
+
+        
 

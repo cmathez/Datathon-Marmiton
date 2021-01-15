@@ -3,7 +3,7 @@
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from app import app
 
     # To maniplutate data
@@ -23,9 +23,9 @@ import plotly.graph_objects as go
 ## Christmas data 
 
 
-df_starter_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_entrees.csv")
-df_meal_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats.csv")
-df_dessert_N = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_desserts.csv")
+df_starter_N = pd.read_csv("data/df_entrees.csv")
+df_meal_N = pd.read_csv("data/df_plats.csv")
+df_dessert_N = pd.read_csv("data/df_desserts.csv")
 
 df_recipes_N = pd.concat([df_starter_N,df_meal_N,df_dessert_N])
 df_recipes_N['Xmas recipe'] = True
@@ -33,11 +33,11 @@ df_recipes_N['Xmas recipe'] = True
 
 ## No christmas data
 
-df_starter = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_entrees_pas_noel.csv")
+df_starter = pd.read_csv("data/df_entrees_pas_noel.csv")
 df_starter['category']='aperitif/starter'
-df_meal = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_plats_pas_noel.csv")
+df_meal = pd.read_csv("data/df_plats_pas_noel.csv")
 df_meal['category']='meal'
-df_desserts = pd.read_csv("/Users/tatianafoulon/Desktop/data/wild_school/hackathon/datathon_2/Datathon-Marmiton/data/df_desserts_pas_noel.csv")
+df_desserts = pd.read_csv("data/df_desserts_pas_noel.csv")
 df_desserts['category'] = 'dessert'
 
 df_recipes = pd.concat([df_starter,df_meal,df_desserts])
@@ -87,6 +87,7 @@ def display_tab_content(active_tab):
 
 @app.callback(Output("result-enter-ing", "figure"), [Input("enter-ing", "value")])
 def output_text(value):
+
 
     list_ing_recipe_N = df_recipes_N['ingredients'].to_list()
     list_ing_recipe = df_recipes['ingredients'].to_list()

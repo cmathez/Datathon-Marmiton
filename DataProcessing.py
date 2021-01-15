@@ -39,8 +39,6 @@ def time_format(x):
   else:
     total_min = np.nan
 
-  
-  
   return total_min
 
 

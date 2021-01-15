@@ -74,3 +74,11 @@ body {
     position: relative;
 }
 
+.title{
+    background-image: url("https://image.shutterstock.com/image-photo/christmas-table-place-setting-holidays-260nw-337248050.jpg");
+}
+
+.text-noel{
+    color :black;
+}
+
