@@ -22,6 +22,7 @@ flask=1.1.2=pyh9f0ad1d_0
 flask-compress=1.8.0=pyhd8ed1ab_0
 future=0.18.2=py39hcbf5309_3
 git=2.23.0=h6bb4b03_0
+gunicorn==20.0.4
 icc_rt=2019.0.0=h0cc432a_1
 idna=2.10=py_0
 intel-openmp=2020.2=254
